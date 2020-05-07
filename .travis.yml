@@ -36,4 +36,4 @@ install: ./install.sh
 jobs:
   include:
     - name: boot_test
-      script: ansible-playbook -v -i localhost, playbook.yml
+      script: ansible-playbook -i localhost, playbook.yml
