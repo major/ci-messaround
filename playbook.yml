@@ -1,0 +1,72 @@
+---
+
+- hosts: localhost
+  vars:
+    fedora_mirror: http://mirror.lstn.net/fedora/releases/32/Cloud/x86_64/images
+    fedora_qcow: Fedora-Cloud-Base-32-1.6.x86_64.qcow2
+  tasks:
+
+    - name: Install packages
+      apt:
+        name:
+          - bridge-utils
+          - cpu-checker
+          - libguestfs-tools
+          - libvirt-bin
+          - libvirt-clients
+          - libvirt-daemon
+          - libvirt-daemon-system
+          - kmod
+          - qemu-kvm
+          - wget
+        state: present
+        update_cache: yes
+
+    - name: Add user to kvm group
+      user:
+        name: "{{ ansible_user }}"
+        groups: kvm
+        append: yes
+
+    - name: Reset ssh connection to add group
+      meta: reset_connection
+
+    - name: Run kvm-ok to verify KVM support
+      command: kvm-ok
+
+    - name: Start libvirtd
+      systemd:
+        name: libvirtd
+        state: started
+        enabled: yes
+
+    - name: Verify that virsh works
+      command: virsh list --all
+
+    - name: Download Fedora QCOW image
+      get_url:
+        url: "{{ fedora_mirror }}/{{ fedora_qcow }}"
+        dest: "/tmp/{{ fedora_qcow }}"
+
+    - name: Set password on the image and remove cloud-init
+      command: |
+        virt-customize -a {{ fedora_qcow }} \
+          --root-password password:secrete --uninstall cloud-init
+
+    - name: Run virt-install to import qcow
+      command: |
+        virt-install \
+          --name fedora-test \
+          --memory 1024 \
+          --vcpus 1 \
+          --disk $(pwd)/{{ fedora_qcow }} \
+          --import \
+          --os-variant fedora
+
+    - name: List running VMs
+      command: virsh list --all
+      register: virsh_check
+
+    - name: Show virsh output
+      debug:
+        var: virsh_check
