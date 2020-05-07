@@ -18,6 +18,7 @@
           - libvirt-daemon-system
           - kmod
           - qemu-kvm
+          - virtinst
           - wget
         state: present
         update_cache: no
