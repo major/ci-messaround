@@ -5,8 +5,9 @@ FEDORA_MIRROR=http://mirror.lstn.net/fedora/releases/32/Cloud/x86_64/images
 FEDORA_QCOW=Fedora-Cloud-Base-32-1.6.x86_64.qcow2
 
 sudo apt -q update
-sudo apt -qy aria2 install bridge-utils libguestfstools libvirt-clients \
-    libvirt-daemon-system libvirt-daemon-driver-qemu kmod qemu-kvm wget
+sudo apt -qy install aria2 install bridge-utils libguestfstools \
+    libvirt-clients libvirt-daemon-system libvirt-daemon-driver-qemu \
+    kmod qemu-kvm wget
 
 kvm-ok
 
