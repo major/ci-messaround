@@ -6,7 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 # Install Ansible
 sudo apt-get -qq update
 sudo apt-get -qq -y install python3 python3-pip openssh-server
-sudo pip install ansible
+sudo pip3 install ansible
 
 # Set up ssh keys and ssh daemon.
 ssh-keygen -b 4096 -t rsa -f /tmp/sshkey -q -N ""
