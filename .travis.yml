@@ -1,4 +1,6 @@
+os: linux
 dist: bionic
+
 language: python
 cache: pip
 python:
@@ -33,4 +35,4 @@ install: ./install.sh
 jobs:
   include:
     - name: boot_test
-      script: ansible-playbook -i localhost, playbook.yml
+      script: ansible-playbook -v -i localhost, playbook.yml
