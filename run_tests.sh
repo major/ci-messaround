@@ -1,41 +1,20 @@
 #!/bin/bash
 set -euxo pipefail
 
-FEDORA_MIRROR=http://mirror.lstn.net/fedora/releases/32/Cloud/x86_64/images
-FEDORA_QCOW=Fedora-Cloud-Base-32-1.6.x86_64.qcow2
+# Install Ansible
+sudo apt-get update
+sudo apt-get -qy install ansible openssh-server
 
-sudo apt-get -q update
-sudo apt-get -qy install aria2 bridge-utils cpu-checker libguestfs-tools \
-    libvirt-bin libvirt-clients libvirt-daemon libvirt-daemon-system \
-    kmod qemu-kvm wget
+# Set up ssh keys and ssh daemon.
+ssh-keygen -b 4096 -t rsa -f /tmp/sshkey -q -N ""
+mkdir -vp ~/.ssh && chmod 0700 ~/.ssh
+cat /tmp/sshkey.pub >> ~/.ssh/authorized_keys && chmod 0700 ~/.ssh/authorized_keys
+sudo systemctl enable --now ssh
 
-id
-sudo usermod -a -G kvm $USER
-newgrp kvm
-id
+# Run Ansible playbook.
+export ANSIBLE_CONFIG=ansible.cfg
+export ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
+ansible-playbook -v -i localhost, playbook.yml
 
-kvm-ok
-
-sudo systemctl enable --now libvirtd
-
-virsh list --all
-
-aria2c -x 4 ${FEDORA_MIRROR}/${FEDORA_QCOW}
-
-virt-customize -a ${FEDORA_QCOW} \
-    --root-password password:secrete --uninstall cloud-init
-
-virt-install \
-    --name fedora-test \
-    --memory 1024 \
-    --vcpus 1 \
-    --disk $(pwd)/${FEDORA_QCOW} \
-    --import \
-    --os-variant fedora
-
-virsh list --all
-
-ip addr
-
+# Get any journald messages during the deployment.
 journalctl --boot
-
