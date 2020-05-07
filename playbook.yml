@@ -63,7 +63,7 @@
 
     - name: Get the IP address for the VM we just started
       set_fact:
-        vm_ip: "{{ vm_address_check.stdout | regex_findall(\"([0-9\.]*)/24\") | first }}"
+        vm_ip: "{{ vm_address_check.stdout | regex_findall(\"([0-9\\.]*)/24\") | first }}"
 
     - name: Add a dynamic host for the VM we made
       add_host:
