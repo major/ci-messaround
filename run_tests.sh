@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-export DEBIAN_FRONTEND=noninteractive
-
 # Install Ansible
 sudo apt-get -qq update
 sudo apt-get -qq -y install openssh-server

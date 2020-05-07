@@ -67,12 +67,33 @@
           --vcpus 1 \
           --disk /tmp/{{ fedora_qcow }} \
           --import \
-          --os-type linux
+          --os-type linux \
+          --noautoconsole \
+          --network network=default
 
-    - name: List running VMs
-      command: virsh list --all
-      register: virsh_check
+    - name: Get address of the new VM (takes time)
+      command: virsh domifaddr fedora-test
+      become: yes
+      register: vm_address_check
+      until: vm_address_check.stdout | regex_search("[0-9\.]*/24")
+      retries: 60
 
-    - name: Show virsh output
+    - name: Get the IP address for the VM we just started
+      set_fact:
+        vm_ip: vm_address_check.stdout | regex_findall("([0-9\.]*)/24") | first
+
+    - name: Add a dynamic host for the VM we made
+      add_host:
+        name: test_vm
+        group: testing_instances
+        ansible_host: "{{ vm_ip }}"
+        ansible_user: root
+        ansible_password: secrete
+        ansible_ssh_pipelining: yes
+
+- hosts: testing_instances
+  tasks:
+
+    - name: Dump data
       debug:
-        var: virsh_check
+        var: hostvars[inventory_hostname]
