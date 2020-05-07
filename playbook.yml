@@ -74,6 +74,7 @@
       register: vm_address_check
       until: vm_address_check.stdout | regex_search("[0-9\.]*/24")
       retries: 60
+      delay: 5
 
     - name: Get the IP address for the VM we just started
       set_fact:
@@ -97,6 +98,6 @@
 - hosts: testing_instances
   tasks:
 
-    - name: Dump data
+    - name: Verify we're in the Fedora VM
       debug:
-        var: hostvars[inventory_hostname]
+        var: "{{ ansible_distribution }}"
