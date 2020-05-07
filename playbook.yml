@@ -20,7 +20,7 @@
           - qemu-kvm
           - wget
         state: present
-        update_cache: yes
+        update_cache: no
       become: yes
 
     - name: Add user to kvm group
