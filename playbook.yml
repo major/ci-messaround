@@ -56,6 +56,7 @@
       command: |
         virt-customize -v -x -a /tmp/{{ fedora_qcow }} \
           --root-password password:secrete --uninstall cloud-init
+      become: yes
 
     - name: Run virt-install to import qcow
       command: |
