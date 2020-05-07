@@ -9,6 +9,11 @@ sudo apt-get -qy install aria2 bridge-utils cpu-checker libguestfs-tools \
     libvirt-bin libvirt-clients libvirt-daemon libvirt-daemon-system \
     kmod qemu-kvm wget
 
+id
+sudo usermod -a -G kvm $USER
+newgrp kvm
+id
+
 kvm-ok
 
 sudo systemctl enable --now libvirtd
