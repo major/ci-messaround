@@ -99,6 +99,7 @@
       copy:
         dest: /tmp/hosts.ini
         content: |
+          [test_instances]
           test_vm ansible_host={{ vm_ip }} ansible_user=fedora ansible_password=secrete ansible_ssh_pipelining=True
 
     - name: Clone ansible-osbuild
