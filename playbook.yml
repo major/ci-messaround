@@ -67,7 +67,7 @@
           --vcpus 1 \
           --disk /tmp/{{ fedora_qcow }} \
           --import \
-          --os-type linux \
+          --os-variant ubuntu18.04 \
           --noautoconsole \
           --network network=default
 
