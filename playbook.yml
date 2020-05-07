@@ -21,24 +21,28 @@
           - wget
         state: present
         update_cache: yes
+      become: yes
 
     - name: Add user to kvm group
       user:
         name: "{{ ansible_user }}"
         groups: kvm
         append: yes
+      become: yes
 
     - name: Reset ssh connection to add group
       meta: reset_connection
 
     - name: Run kvm-ok to verify KVM support
       command: kvm-ok
+      become: yes
 
     - name: Start libvirtd
       systemd:
         name: libvirtd
         state: started
         enabled: yes
+      become: yes
 
     - name: Verify that virsh works
       command: virsh list --all
