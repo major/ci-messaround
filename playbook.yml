@@ -38,7 +38,7 @@
     - name: Customize the image
       command: |
         virt-customize -v -x -a /tmp/{{ fedora_qcow }} \
-          --root-password password:secrete \
+          --password fedora:password:secrete \
           --uninstall cloud-init
       become: yes
 
