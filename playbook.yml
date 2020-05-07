@@ -67,7 +67,7 @@
           --vcpus 1 \
           --disk /tmp/{{ fedora_qcow }} \
           --import \
-          --os-variant fedora
+          --os-type linux
 
     - name: List running VMs
       command: virsh list --all
