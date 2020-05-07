@@ -6,24 +6,6 @@
     fedora_qcow: Fedora-Cloud-Base-32-1.6.x86_64.qcow2
   tasks:
 
-    - name: Install packages
-      apt:
-        name:
-          - bridge-utils
-          - cpu-checker
-          - libguestfs-tools
-          - libvirt-bin
-          - libvirt-clients
-          - libvirt-daemon
-          - libvirt-daemon-system
-          - kmod
-          - qemu-kvm
-          - virtinst
-          - wget
-        state: present
-        update_cache: no
-      become: yes
-
     - name: Add user to kvm group
       user:
         name: "{{ ansible_user_id }}"
@@ -70,6 +52,7 @@
           --os-variant ubuntu18.04 \
           --noautoconsole \
           --network network=default
+      become: yes
 
     - name: Get address of the new VM (takes time while it boots)
       command: virsh domifaddr fedora-test

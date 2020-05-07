@@ -3,9 +3,34 @@ language: python
 cache: pip
 python:
   - "3.7"
+
 env:
-  - PYTHONUNBUFFERED=1
+  global:
+    - PYTHONUNBUFFERED=1
+    - DEBIAN_FRONTEND=noninteractive
+    - ANSIBLE_CONFIG=ansible.cfg
+    - ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
+
+addons:
+  apt:
+    packages:
+      - bridge-utils
+      - cpu-checker
+      - kmod
+      - libguestfs-tools
+      - libvirt-bin
+      - libvirt-clients
+      - libvirt-daemon
+      - libvirt-daemon-system
+      - openssh-server
+      - qemu-kvm
+      - virtinst
+      - wget
+    update: false
+
+install: ./install.sh
+
 jobs:
   include:
-    - name: testing
-      script: ./run_tests.sh
+    - name: boot_test
+      script: ansible-playbook -i localhost, playbook.yml
