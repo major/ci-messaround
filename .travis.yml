@@ -21,8 +21,6 @@ addons:
       - bridge-utils
       - cpu-checker
       - kmod
-      - libguestfs-tools
-      - libvirt-bin
       - libvirt-clients
       - libvirt-daemon
       - libvirt-daemon-system

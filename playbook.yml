@@ -35,12 +35,24 @@
         url: "{{ fedora_mirror }}/{{ fedora_qcow }}"
         dest: "/tmp/{{ fedora_qcow }}"
 
-    - name: Customize the image
-      command: |
-        virt-customize -a /tmp/{{ fedora_qcow }} \
-          --password fedora:password:secrete \
-          --uninstall cloud-init
-      become: yes
+    - name: Write cloud-init user-data
+      copy:
+        dest: /tmp/user-data
+        content: |
+          #cloud-config
+          ssh_authorized_keys:
+            - {{ lookup('file', '/tmp/sshkey.pub') }}
+
+    - name: Write cloud-init meta-data
+      copy:
+        dest: /tmp/meta-data
+        content: |
+          instance-id: testing
+
+    - name: Create cloud-init ISO
+      command: genisoimage -o /tmp/cloud-init.iso -V cidata -r -J user-data meta-data
+      args:
+        chdir: /tmp
 
     - name: Run virt-install to import qcow
       command: |
@@ -48,7 +60,8 @@
           --name fedora-test \
           --memory 1024 \
           --vcpus 1 \
-          --disk /tmp/{{ fedora_qcow }} \
+          --disk path=/tmp/{{ fedora_qcow }} \
+          --disk path=/tmp/cloud-init.iso,device=cdrom \
           --import \
           --os-variant ubuntu18.04 \
           --noautoconsole \
