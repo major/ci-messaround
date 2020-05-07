@@ -80,24 +80,36 @@
       set_fact:
         vm_ip: "{{ vm_address_check.stdout | regex_findall(\"([0-9\\.]*)/24\") | first }}"
 
-    - name: Add a dynamic host for the VM we made
-      add_host:
-        name: test_vm
-        group: testing_instances
-        ansible_host: "{{ vm_ip }}"
-        ansible_user: fedora
-        ansible_password: secrete
-        ansible_ssh_pipelining: yes
-
     - name: Wait for the ssh daemon to start
       wait_for:
         host: "{{ vm_ip }}"
         port: 22
         timeout: 300
 
-- hosts: testing_instances
+    - name: Add a dynamic host for the VM we made
+      add_host:
+        name: test_vm
+        group: test_instances
+        ansible_host: "{{ vm_ip }}"
+        ansible_user: fedora
+        ansible_password: secrete
+        ansible_ssh_pipelining: yes
+
+    - name: Write dynamic host file to disk
+      copy:
+        path: /tmp/hosts.ini
+        content: |
+          test_vm ansible_host={{ vm_ip }} ansible_user=fedora ansible_password=secrete ansible_ssh_pipelining=True
+
+    - name: Clone ansible-osbuild
+      git:
+        repo: https://github.com/osbuild/ansible-osbuild/
+        dest: /tmp/ansible-osbuild
+        version: master
+
+- hosts: test_instances
   tasks:
 
     - name: Verify we're in the Fedora VM
       debug:
-        var: "{{ ansible_distribution }}"
+        var: ansible_distribution
