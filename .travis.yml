@@ -13,7 +13,7 @@ env:
     - ANSIBLE_CONFIG=ansible.cfg
     - ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
   matrix:
-    - fedora32
+    - TESTING_DISTRO=fedora32
 
 addons:
   apt:
@@ -28,6 +28,7 @@ addons:
       - libvirt-daemon-system
       - openssh-server
       - qemu-kvm
+      - sshpass
       - virtinst
       - wget
     update: false

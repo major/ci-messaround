@@ -35,10 +35,12 @@
         url: "{{ fedora_mirror }}/{{ fedora_qcow }}"
         dest: "/tmp/{{ fedora_qcow }}"
 
-    - name: Set password on the image and remove cloud-init
+    - name: Customize the image
       command: |
         virt-customize -v -x -a /tmp/{{ fedora_qcow }} \
-          --root-password password:secrete --uninstall cloud-init
+          --root-password password:secrete \
+          --ssh-inject fedora:file:/tmp/sshkey.pub \
+          --uninstall cloud-init
       become: yes
 
     - name: Run virt-install to import qcow
@@ -70,8 +72,8 @@
         name: test_vm
         group: testing_instances
         ansible_host: "{{ vm_ip }}"
-        ansible_user: root
-        ansible_password: secrete
+        ansible_user: fedora
+        ansible_private_key_file: /tmp/sshkey
         ansible_ssh_pipelining: yes
 
     - name: Wait for the ssh daemon to start
