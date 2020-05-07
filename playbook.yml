@@ -71,7 +71,7 @@
           --noautoconsole \
           --network network=default
 
-    - name: Get address of the new VM (takes time)
+    - name: Get address of the new VM (takes time while it boots)
       command: virsh domifaddr fedora-test
       become: yes
       register: vm_address_check
@@ -90,6 +90,12 @@
         ansible_user: root
         ansible_password: secrete
         ansible_ssh_pipelining: yes
+
+    - name: Wait for the ssh daemon to start
+      wait_for:
+        host: "{{ vm_ip }}"
+        port: 22
+        timeout: 300
 
 - hosts: testing_instances
   tasks:
