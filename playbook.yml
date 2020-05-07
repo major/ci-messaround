@@ -97,7 +97,7 @@
 
     - name: Write dynamic host file to disk
       copy:
-        path: /tmp/hosts.ini
+        dest: /tmp/hosts.ini
         content: |
           test_vm ansible_host={{ vm_ip }} ansible_user=fedora ansible_password=secrete ansible_ssh_pipelining=True
 
