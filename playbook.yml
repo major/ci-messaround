@@ -25,7 +25,7 @@
 
     - name: Add user to kvm group
       user:
-        name: "{{ ansible_user }}"
+        name: "{{ ansible_user_id }}"
         groups: kvm
         append: yes
       become: yes
