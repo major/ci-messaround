@@ -58,8 +58,8 @@
       command: |
         virt-install \
           --name fedora-test \
-          --memory 1024 \
-          --vcpus 1 \
+          --memory 4096 \
+          --vcpus 2 \
           --disk path=/tmp/{{ fedora_qcow }} \
           --disk path=/tmp/cloud-init.iso,device=cdrom \
           --import \

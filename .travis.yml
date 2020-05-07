@@ -38,4 +38,4 @@ jobs:
     - name: boot_test
       script: |
         ansible-playbook -i localhost, playbook.yml
-        ansible-playbook -v -i /tmp/hosts.ini /tmp/ansible-osbuild/playbook.yml
+        ansible-playbook -i /tmp/hosts.ini /tmp/ansible-osbuild/playbook.yml
