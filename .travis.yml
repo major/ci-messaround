@@ -4,7 +4,6 @@ python:
   - "3.7"
 env:
   - PYTHONUNBUFFERED=1
-  - DEBIAN_FRONTEND=noninteractive
 jobs:
   include:
     - name: testing
