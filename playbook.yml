@@ -37,7 +37,7 @@
 
     - name: Customize the image
       command: |
-        virt-customize -v -x -a /tmp/{{ fedora_qcow }} \
+        virt-customize -a /tmp/{{ fedora_qcow }} \
           --password fedora:password:secrete \
           --uninstall cloud-init
       become: yes
@@ -71,7 +71,7 @@
         name: test_vm
         group: testing_instances
         ansible_host: "{{ vm_ip }}"
-        ansible_user: root
+        ansible_user: fedora
         ansible_password: secrete
         ansible_ssh_pipelining: yes
 
