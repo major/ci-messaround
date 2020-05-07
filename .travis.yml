@@ -12,6 +12,8 @@ env:
     - DEBIAN_FRONTEND=noninteractive
     - ANSIBLE_CONFIG=ansible.cfg
     - ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
+  matrix:
+    - fedora32
 
 addons:
   apt:
