@@ -1,9 +1,12 @@
 #!/bin/bash
 set -euxo pipefail
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Install Ansible
-sudo apt-get update
-sudo apt-get -qy install ansible openssh-server
+sudo apt-get -qq update
+sudo apt-get -qq -y install python3 python3-pip openssh-server
+sudo pip install ansible
 
 # Set up ssh keys and ssh daemon.
 ssh-keygen -b 4096 -t rsa -f /tmp/sshkey -q -N ""
@@ -17,4 +20,4 @@ export ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
 ansible-playbook -v -i localhost, playbook.yml
 
 # Get any journald messages during the deployment.
-journalctl --boot
+# journalctl --boot
