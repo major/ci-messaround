@@ -54,7 +54,7 @@
 
     - name: Set password on the image and remove cloud-init
       command: |
-        virt-customize -a {{ fedora_qcow }} \
+        virt-customize -a /tmp/{{ fedora_qcow }} \
           --root-password password:secrete --uninstall cloud-init
 
     - name: Run virt-install to import qcow
@@ -63,7 +63,7 @@
           --name fedora-test \
           --memory 1024 \
           --vcpus 1 \
-          --disk $(pwd)/{{ fedora_qcow }} \
+          --disk /tmp/{{ fedora_qcow }} \
           --import \
           --os-variant fedora
 

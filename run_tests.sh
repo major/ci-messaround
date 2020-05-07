@@ -17,7 +17,7 @@ sudo systemctl enable --now ssh
 # Run Ansible playbook.
 export ANSIBLE_CONFIG=ansible.cfg
 export ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
-ansible-playbook -v -i localhost, playbook.yml
+ansible-playbook -i localhost, playbook.yml
 
 # Get any journald messages during the deployment.
 # journalctl --boot
