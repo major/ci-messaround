@@ -27,6 +27,8 @@ virt-install \
     --import \
     --os-variant fedora
 
+virsh list --all
+
 ip addr
 
 journalctl --boot
