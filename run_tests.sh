@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-env | sort
-
 ansible-playbook \
     -i localhost, \
     -e testing_os=${TESTING_OS} \

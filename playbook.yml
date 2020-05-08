@@ -9,8 +9,8 @@
         - http://mirrors.kernel.org/fedora/releases/{{ testing_os_version }}/Cloud/x86_64/images
     qcow:
       fedora:
-        31: Fedora-Cloud-Base-31-1.9.x86_64.qcow2
-        32: Fedora-Cloud-Base-32-1.6.x86_64.qcow2
+        "31": Fedora-Cloud-Base-31-1.9.x86_64.qcow2
+        "32": Fedora-Cloud-Base-32-1.6.x86_64.qcow2
   tasks:
 
     - name: Dump the testing OS + version
