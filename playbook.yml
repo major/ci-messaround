@@ -2,9 +2,29 @@
 
 - hosts: localhost
   vars:
-    fedora_mirror: http://mirror.lstn.net/fedora/releases/32/Cloud/x86_64/images
-    fedora_qcow: Fedora-Cloud-Base-32-1.6.x86_64.qcow2
+    mirrors:
+      fedora:
+        - http://mirror.lstn.net/fedora/releases/{{ testing_os_version }}/Cloud/x86_64/images
+        - http://fedora.mirrors.tds.net/fedora/releases/{{ testing_os_version }}/Cloud/x86_64/images
+        - http://mirrors.kernel.org/fedora/releases/{{ testing_os_version }}/Cloud/x86_64/images
+    qcow:
+      fedora:
+        "31": Fedora-Cloud-Base-31-1.9.x86_64.qcow2
+        "32": Fedora-Cloud-Base-32-1.6.x86_64.qcow2
   tasks:
+
+    - name: Set the mirror and qcow file for downloading
+      set_fact:
+        download_mirror: "{{ mirrors[testing_os] | shuffle | first }}"
+        qcow_file: "{{ qcow[testing_os][testing_os_version] }}"
+
+    - name: Download Fedora QCOW image in the background
+      get_url:
+        url: "{{ download_mirror }}/{{ qcow_file }}"
+        dest: "/tmp/{{ qcow_file }}"
+      async: 300
+      poll: 0
+      register: qcow_download
 
     - name: Add user to kvm group
       user:
@@ -30,11 +50,6 @@
     - name: Verify that virsh works
       command: virsh list --all
 
-    - name: Download Fedora QCOW image
-      get_url:
-        url: "{{ fedora_mirror }}/{{ fedora_qcow }}"
-        dest: "/tmp/{{ fedora_qcow }}"
-
     - name: Write cloud-init user-data
       copy:
         dest: /tmp/user-data
@@ -54,13 +69,20 @@
       args:
         chdir: /tmp
 
+    - name: Wait for the QCOW download to finish
+      async_status:
+        jid: "{{ qcow_download.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30
+
     - name: Run virt-install to import qcow
       command: |
         virt-install \
           --name fedora-test \
           --memory 4096 \
           --vcpus 2 \
-          --disk path=/tmp/{{ fedora_qcow }} \
+          --disk path=/tmp/{{ qcow_file }} \
           --disk path=/tmp/cloud-init.iso,device=cdrom \
           --import \
           --os-variant ubuntu18.04 \

@@ -13,7 +13,8 @@ env:
     - ANSIBLE_CONFIG=ansible.cfg
     - ANSIBLE_PRIVATE_KEY_FILE=/tmp/sshkey
   matrix:
-    - TESTING_DISTRO=fedora32
+    - TESTING_OS=fedora TESTING_OS_VERSION=31
+    - TESTING_OS=fedora TESTING_OS_VERSION=32
 
 addons:
   apt:
@@ -38,4 +39,8 @@ jobs:
     - name: boot_test
       script: |
         ansible-playbook -i localhost, playbook.yml
-        ansible-playbook -i /tmp/hosts.ini /tmp/ansible-osbuild/playbook.yml
+        ansible-playbook \
+          -i /tmp/hosts.ini \
+          -e testing_os=${TESTING_OS} \
+          -e testing_os_version=${TESTING_OS_VERSION} \
+          /tmp/ansible-osbuild/playbook.yml
