@@ -1,9 +1,11 @@
-  #!/bin/bash
-  set -euxo pipefail
+#!/bin/bash
+set -euxo pipefail
 
-  ansible-playbook -i localhost, playbook.yml
+env | sort
 
-  ansible-playbook \
+ansible-playbook -i localhost, playbook.yml
+
+ansible-playbook \
     -i /tmp/hosts.ini \
     -e testing_os=${TESTING_OS} \
     -e testing_os_version=${TESTING_OS_VERSION} \
